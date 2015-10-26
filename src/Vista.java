@@ -572,6 +572,7 @@ public class Vista extends javax.swing.JFrame implements KeyListener{
     private ArrayList<String> getParametersFromFunction(String pNameFunction){
         boolean paraentisisAbreFinded = false;
         boolean paraentisisCierraFinded = false;
+        boolean functionFound = false;
         String parameter = "";
         ArrayList<String> parameters = new ArrayList<>();
         String line;
@@ -582,33 +583,39 @@ public class Vista extends javax.swing.JFrame implements KeyListener{
 
                 if (line.length() > 0){
                     
-                    if(line.toUpperCase().contains(pNameFunction.toUpperCase())){ 
+                    if(line.toUpperCase().contains(pNameFunction.toUpperCase())||functionFound){ 
+                        functionFound = true;
                         System.out.println("si cotiene funcion");
                         
+                        //recorrer caracter por caracter
                         for(int j = 0; j<line.length();j++){
+                            //si se encuentra con un caracter de parantisis abierto
                             if(line.charAt(j) == '('){
                                 paraentisisAbreFinded = true;
                                 continue;
                             }
+                            //si se encuenrtra con un caracter de coma o espacio
                             if(line.charAt(j) == ','){
+                                //a lo que tenga el parametro se le quita espacios y caracter $
                                 parameter = parameter.replace("$", "");
-                                parameter = parameter.replace(" ", "");
+                                parameter = parameter.replaceAll("\\s","");
+                                //si el parametro esta vacio
                                 if (parameter.length() == 0) {
                                     continue;
                                 }
+                                //se agrega el parametro
                                 parameters.add(parameter);
                                 parameter = "";
                                 continue;
                             }
-                            
+                            //si encuentra un caracter de paraentices que coerra
                             if(line.charAt(j) == ')'){
                                 paraentisisCierraFinded = true;
                                 parameter = parameter.replace("$", "");
-                                parameter = parameter.replace(" ", "");
-                                if (parameter.length() == 0) {
-                                    continue;
+                                parameter = parameter.replaceAll("\\s","");
+                                if (parameter.length() != 0) {
+                                     parameters.add(parameter);
                                 }
-                                parameters.add(parameter);
                                 return parameters;
                             }
                             
